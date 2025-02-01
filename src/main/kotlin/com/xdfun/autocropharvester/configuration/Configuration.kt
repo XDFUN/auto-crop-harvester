@@ -1,6 +1,6 @@
 package com.xdfun.autocropharvester.configuration
 
 interface Configuration {
-    var enableAutoHarvest: Boolean
-    var enableAutoPlant: Boolean
+    val enableAutoHarvest: Boolean
+    val enableAutoPlant: Boolean
 }

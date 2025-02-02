@@ -2,8 +2,6 @@ package com.xdfun.autocropharvester.configuration
 
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
-import net.minecraft.util.ActionResult
-
 
 interface ConfigurationChangedCallback {
     companion object {
@@ -11,19 +9,14 @@ interface ConfigurationChangedCallback {
             ConfigurationChangedCallback::class.java
         ) { listeners ->
             object : ConfigurationChangedCallback {
-                override fun interact(configuration: Configuration): ActionResult? {
+                override fun interact(configuration: Configuration) {
                     for (listener in listeners) {
-                        val result: ActionResult? = listener.interact(configuration)
-
-                        if (result !== ActionResult.PASS) {
-                            return result
-                        }
+                        listener.interact(configuration)
                     }
-                    return ActionResult.PASS
                 }
             }
         }
     }
 
-    fun interact(configuration: Configuration): ActionResult?
+    fun interact(configuration: Configuration)
 }

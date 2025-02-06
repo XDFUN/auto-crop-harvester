@@ -1,20 +1,23 @@
 package com.xdfun.autocropharvester.ticks
 
+import com.xdfun.autocropharvester.callbacks.AutoPlanter
 import com.xdfun.autocropharvester.configuration.Configuration
 import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
-import com.xdfun.autocropharvester.utils.ModIdUtils
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.block.*
+import net.minecraft.block.BlockState
+import net.minecraft.block.CropBlock
+import net.minecraft.block.NetherWartBlock
+import net.minecraft.block.SugarCaneBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.state.property.IntProperty
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 
-class AutoHarvestTicker(configuration: Configuration) : ClientTickEvents.StartTick, ConfigurationChangedCallback {
-    private val _logger = LoggerFactory.getLogger(ModIdUtils.modId)
+class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTickEvents.StartTick, ConfigurationChangedCallback {
+    private val _logger = logger
     private var _configuration: Configuration = configuration
 
     override fun onStartTick(client: MinecraftClient?) {
@@ -56,20 +59,12 @@ class AutoHarvestTicker(configuration: Configuration) : ClientTickEvents.StartTi
         when (cropBlockState.block) {
             is CropBlock -> harvestCropBlock(client, player, configuration, cropBlockState, cropPos)
             is NetherWartBlock -> harvestNetherWart(client, player, configuration, cropBlockState, cropPos)
-            is SugarCaneBlock -> harvestSugarCane(client, player, cropPos)
+            is SugarCaneBlock -> harvestSugarCane(client, player, configuration, cropBlockState, cropPos)
         }
     }
 
     private fun canSneakAutoHarvest(configuration: Configuration, player: ClientPlayerEntity): Boolean {
         return configuration.enableSneakAutoHarvest || player.isSneaking.not()
-    }
-
-    private fun canHarvestCropBlock(configuration: Configuration, cropBlock: CropBlock, cropBlockState: BlockState): Boolean {
-        return configuration.enablePrematureAutoHarvest || cropBlock.isMature(cropBlockState)
-    }
-
-    private fun canHarvestAgingBlock(configuration: Configuration, cropBlockState: BlockState, ageProperty: IntProperty, maxAge: Int): Boolean {
-        return configuration.enablePrematureAutoHarvest || (cropBlockState[ageProperty] == maxAge)
     }
 
     private fun getCropBlockState(blockPos: BlockPos, currentWorld: ClientWorld): BlockState {
@@ -85,24 +80,38 @@ class AutoHarvestTicker(configuration: Configuration) : ClientTickEvents.StartTi
         _logger.debug("Harvesting crop at {}", blockPos)
     }
 
+    private fun canHarvestCropBlock(configuration: Configuration, cropBlock: CropBlock, cropBlockState: BlockState): Boolean {
+        return configuration.enablePrematureAutoHarvest || cropBlock.isMature(cropBlockState)
+    }
+
+    private fun canHarvestAgingBlock(configuration: Configuration, cropBlockState: BlockState, ageProperty: IntProperty, maxAge: Int): Boolean {
+        return configuration.enablePrematureAutoHarvest || (cropBlockState[ageProperty] == maxAge)
+    }
+
     private fun harvestCropBlock(client: MinecraftClient, player: ClientPlayerEntity, configuration: Configuration, blockState: BlockState, blockPos: BlockPos) {
         val cropBlock: CropBlock = blockState.block as CropBlock
 
         if (canHarvestCropBlock(configuration, cropBlock, blockState)) {
             logHarvesting(blockPos)
-            client.interactionManager?.attackBlock(blockPos, Direction.getFacing(player.eyePos))
+            attackBlock(client, player, blockState, blockPos)
         }
     }
 
     private fun harvestNetherWart(client: MinecraftClient, player: ClientPlayerEntity, configuration: Configuration, blockState: BlockState, blockPos: BlockPos) {
         if (canHarvestAgingBlock(configuration, blockState, NetherWartBlock.AGE, NetherWartBlock.MAX_AGE)) {
             logHarvesting(blockPos)
-            client.interactionManager?.attackBlock(blockPos, Direction.getFacing(player.eyePos))
+            attackBlock(client, player, blockState, blockPos)
         }
     }
 
-    private fun harvestSugarCane(client: MinecraftClient, player: ClientPlayerEntity, blockPos: BlockPos) {
+    private fun harvestSugarCane(client: MinecraftClient, player: ClientPlayerEntity, configuration: Configuration, blockState: BlockState, blockPos: BlockPos) {
         logHarvesting(blockPos)
+        attackBlock(client, player, blockState, blockPos)
+    }
+
+    private fun attackBlock(client: MinecraftClient, player: ClientPlayerEntity, blockState: BlockState, blockPos: BlockPos) {
+        AutoPlanter.INSTANCE?.notifyBlockBreakRequest(blockState, blockPos)
+
         client.interactionManager?.attackBlock(blockPos, Direction.getFacing(player.eyePos))
     }
 }

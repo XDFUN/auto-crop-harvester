@@ -18,7 +18,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import org.slf4j.Logger
 
-
 class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationChangedCallback {
 
     companion object {
@@ -39,6 +38,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
             return
         }
 
+        _logger.trace("Notified break at: {}", blockPos)
         _requestBlockBreaks[blockPos] = blockState
     }
 
@@ -49,12 +49,17 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
             return
         }
 
+        if(!_requestBlockBreaks.containsKey(blockPos)) {
+            _logger.trace("Not found break at: {}", blockPos)
+            return
+        }
+
         val blockState = _requestBlockBreaks.remove(blockPos) ?: return
 
         val configuration = _configuration
 
         if (configuration.enableAutoPlant.not()) {
-            _logger.info("Auto plant is disabled.")
+            _logger.trace("Auto plant is disabled.")
             return
         }
 
@@ -64,7 +69,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         val interactionManager = client.interactionManager
 
         if (world == null || player == null || interactionManager == null) {
-            _logger.info("Could not acquire client instance")
+            _logger.trace("Could not acquire client instance")
             return
         }
 
@@ -86,7 +91,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         val inventory = player.inventory
 
         if (inventory.mainHandStack.isEmpty.not() && inventory.mainHandStack.item == block.asItem()) {
-            _logger.info("Seed is already selected, no swap")
+            _logger.trace("Seed is already selected, no swap")
             plantMainHand(interactionManager, player, blockPos)
         }
 
@@ -94,13 +99,13 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
             val offHandStack = inventory.offHand.firstOrNull { it.item == block.asItem() }
 
             if (offHandStack != null) {
-                _logger.info("Seed is in offhand, no swap")
+                _logger.trace("Seed is in offhand, no swap")
                 val result = interactionManager.interactBlock(
                     player,
                     Hand.OFF_HAND,
                     BlockHitResult(player.pos, Direction.UP, blockPos.down(), false)
                 )
-                _logger.info("Off hand plant result: $result")
+                _logger.trace("Off hand plant result: {}", result)
 
                 return
             }
@@ -116,7 +121,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
             return
         }
 
-        _logger.info("Trying to acquire seed from inventory")
+        _logger.trace("Trying to acquire seed from inventory")
         plantFromInventory(client, inventory, interactionManager, player, blockPos, foundSeed)
     }
 
@@ -127,15 +132,15 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         blockPos: BlockPos,
         foundSeed: ItemStack
     ): Boolean {
-        _logger.info("try find seed in hotbar")
+        _logger.trace("try find seed in hotbar")
         val originalSeedSlot = inventory.getSlotWithStack(foundSeed)
 
         if (originalSeedSlot >= PlayerInventory.HOTBAR_SIZE) {
-            _logger.info("Could not find seed in hotbar")
+            _logger.trace("Could not find seed in hotbar")
             return false
         }
 
-        _logger.info("Found seed in hotbar, changing selection and planting")
+        _logger.trace("Found seed in hotbar, changing selection and planting")
         val hotbarSlot = inventory.selectedSlot
         inventory.selectedSlot = originalSeedSlot
         plantMainHand(interactionManager, player, blockPos)
@@ -156,13 +161,13 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
 
         inventory.selectedSlot = inventory.getSwappableHotbarSlot()
 
-        _logger.info("Swapping items hotbar: ${inventory.main[inventory.selectedSlot]} with inv:${inventory.main[originalSeedSlot]}")
-        swapItems(client, interactionManager, player, originalSeedSlot, inventory.selectedSlot)
+        _logger.trace("Swapping items hotbar: {} with inv: {}", inventory.main[inventory.selectedSlot], inventory.main[originalSeedSlot])
+        swapItems(interactionManager, player, originalSeedSlot, inventory.selectedSlot)
 
         plantMainHand(interactionManager, player, blockPos)
 
-        _logger.info("Swapping items hotbar: ${inventory.main[inventory.selectedSlot]} with inv:${inventory.main[originalSeedSlot]}")
-        swapItems(client, interactionManager, player, originalSeedSlot, inventory.selectedSlot)
+        _logger.trace("Swapping items hotbar: {} with inv: {}", inventory.main[inventory.selectedSlot], inventory.main[originalSeedSlot])
+        swapItems(interactionManager, player, originalSeedSlot, inventory.selectedSlot)
 
         inventory.selectedSlot = originalSelectedSlot
     }
@@ -173,13 +178,13 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         blockPos: BlockPos
     ) {
         val underCrop = blockPos
-        _logger.info("Plant with main hand at pos: $underCrop")
+        _logger.trace("Plant with main hand at pos: {}", underCrop)
         val result = interactionManager.interactBlock(
             player,
             Hand.MAIN_HAND,
             BlockHitResult(player.pos, Direction.UP, underCrop, false)
         )
-        _logger.info("Plant result: $result")
+        _logger.trace("Plant result: {}", result)
     }
 
     private fun swapItems(

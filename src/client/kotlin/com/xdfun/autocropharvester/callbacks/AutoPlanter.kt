@@ -188,15 +188,11 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
     }
 
     private fun swapItems(
-        client: MinecraftClient,
         interactionManager: ClientPlayerInteractionManager,
         player: ClientPlayerEntity,
         fromSlot: Int,
         toSlot: Int
     ) {
-        //val inventoryScreen = InventoryScreen(client.player)
-        //client.setScreenAndRender(inventoryScreen)
         interactionManager.clickSlot(player.currentScreenHandler.syncId, fromSlot, toSlot, SlotActionType.SWAP, player)
-        //player.closeHandledScreen();
     }
 }

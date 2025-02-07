@@ -22,8 +22,6 @@ object AutoCropHarvesterClient : ClientModInitializer {
         val harvestTicker = AutoHarvestTicker(configuration, _logger)
         val autoPlanter = AutoPlanter(configuration, _logger)
 
-		ConfigurationChangedCallback.EVENT.register(harvestTicker)
-		ConfigurationChangedCallback.EVENT.register(autoPlanter)
         ConfigurationChangedCallback.EVENT.register(harvestTicker)
         ConfigurationChangedCallback.EVENT.register(autoPlanter)
 

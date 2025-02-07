@@ -6,15 +6,18 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import net.fabricmc.loader.api.FabricLoader
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Path
 
 class JsonFileConfiguration private constructor() : ConfigurationChangedCallback {
+    private val _logger = LoggerFactory.getLogger(ModIdUtils.MOD_ID)
+
     companion object {
         private val path: Path = FabricLoader.getInstance().configDir
-        private val fileName = ModIdUtils.modId + ".json"
-        private val configFile: File = path.resolve(fileName).toFile()
-        private val module = SerializersModule {
+        private const val FILE_NAME = ModIdUtils.MOD_ID + ".json"
+        private val configFile: File = path.resolve(FILE_NAME).toFile()
+        private val module: SerializersModule = SerializersModule {
             polymorphic(
                 SerializableConfiguration::class,
                 SerializableConfigurationV1::class,
@@ -36,7 +39,9 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
             return SerializableConfigurationV1()
         }
 
+        _logger.trace("Deserializing configuration from file")
         val config = jsonSerializer.decodeFromString<SerializableConfiguration>(configFile.readText())
+        _logger.debug("Deserialized configuration from file")
 
         return config.convertToConfiguration()
     }
@@ -45,6 +50,7 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
         val fileContent =
             jsonSerializer.encodeToString<SerializableConfiguration>(getSerializableConfiguration(configuration))
 
+        _logger.trace("Serializing configuration to file")
         configFile.writeText(fileContent)
     }
 

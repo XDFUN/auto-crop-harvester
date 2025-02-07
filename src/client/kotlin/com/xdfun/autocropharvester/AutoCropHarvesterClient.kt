@@ -11,9 +11,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import org.slf4j.LoggerFactory
 
 object AutoCropHarvesterClient : ClientModInitializer {
-	private val _logger = LoggerFactory.getLogger(ModIdUtils.modId)
-	override fun onInitializeClient() {
-		_logger.info("Client mod initialization")
+    private val _logger = LoggerFactory.getLogger(ModIdUtils.MOD_ID)
+
+    override fun onInitializeClient() {
+        _logger.info("Initializing Auto Crop Harvester")
 
 		val configuration = JsonFileConfiguration.INSTANCE.load()
 

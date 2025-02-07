@@ -1,5 +1,5 @@
 package com.xdfun.autocropharvester.utils
 
 object ModIdUtils {
-    val modId: String = "auto-crop-harvester"
+    const val MOD_ID: String = "auto-crop-harvester"
 }

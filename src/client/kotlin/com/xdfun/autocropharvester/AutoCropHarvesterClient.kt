@@ -1,6 +1,7 @@
 package com.xdfun.autocropharvester
 
 import com.xdfun.autocropharvester.callbacks.AutoPlanter
+import com.xdfun.autocropharvester.commands.AutoCropHarvesterCommands
 import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
 import com.xdfun.autocropharvester.configuration.ConfigurationManager
 import com.xdfun.autocropharvester.configuration.JsonFileConfiguration
@@ -16,16 +17,20 @@ object AutoCropHarvesterClient : ClientModInitializer {
     override fun onInitializeClient() {
         _logger.info("Initializing Auto Crop Harvester")
 
-		val configuration = JsonFileConfiguration.INSTANCE.load()
+        val configuration = JsonFileConfiguration.INSTANCE.load()
 
-		val harvestTicker = AutoHarvestTicker(configuration, _logger)
-		val autoPlanter = AutoPlanter(configuration, _logger)
+        val harvestTicker = AutoHarvestTicker(configuration, _logger)
+        val autoPlanter = AutoPlanter(configuration, _logger)
 
 		ConfigurationChangedCallback.EVENT.register(harvestTicker)
 		ConfigurationChangedCallback.EVENT.register(autoPlanter)
+        ConfigurationChangedCallback.EVENT.register(harvestTicker)
+        ConfigurationChangedCallback.EVENT.register(autoPlanter)
 
-		ConfigurationManager.INSTANCE.initialize(configuration)
+        ConfigurationManager.INSTANCE.initialize(configuration)
 
-		ClientTickEvents.START_CLIENT_TICK.register(harvestTicker)
-	}
+        AutoCropHarvesterCommands.registerCommands()
+
+        ClientTickEvents.START_CLIENT_TICK.register(harvestTicker)
+    }
 }

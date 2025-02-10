@@ -97,13 +97,13 @@ publishing {
 
     val mavenUrl = project.providers.environmentVariable("MAVEN_URL").orNull
 
-    if (mavenUrl != null) {
+    if (!mavenUrl.isNullOrEmpty()) {
         repositories.maven {
             url = uri(mavenUrl)
 
             val mavenUsername = project.providers.environmentVariable("MAVEN_USERNAME").orNull
 
-            if (mavenUsername != null) {
+            if (!mavenUsername.isNullOrEmpty()) {
                 credentials(PasswordCredentials::class) {
                     username = mavenUsername
                     password = project.providers.environmentVariable("MAVEN_PASSWORD").toString()
@@ -128,21 +128,21 @@ publishMods {
 
     // Currently not setup
 //    curseforge {
-//        dryRun = curseforgeAccessToken == null || curseforgeMinecraftVersion == null
+//        dryRun = curseforgeAccessToken.isNullOrEmpty() || curseforgeMinecraftVersion.isNullOrEmpty()
 //        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 //        projectId = "306612"
 //        minecraftVersions.add(curseforgeMinecraftVersion ?: "dryrun")
 //    }
 
     modrinth {
-        dryRun = modrinthToken == null
+        dryRun = modrinthToken.isNullOrEmpty()
         accessToken = modrinthToken
         projectId = "h6cMODvx"
         minecraftVersions.add(minecraftVersion)
     }
 
     github {
-        dryRun = githubToken == null
+        dryRun = githubToken.isNullOrEmpty()
         accessToken = githubToken
         repository = providers.environmentVariable("GITHUB_REPOSITORY").getOrElse("AutoCropHarvester/dryrun")
         commitish = providers.environmentVariable("GITHUB_REF_NAME").getOrElse("dryrun")

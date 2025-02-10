@@ -61,6 +61,7 @@ jobs:
       - name: Build and Publish with Gradle
         run: ./gradlew build publish --stacktrace
         env:
+          MOD_VERSION: ${{ github.event.inputs.version }}
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}

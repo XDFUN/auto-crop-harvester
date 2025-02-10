@@ -1,3 +1,5 @@
+import me.modmuss50.mpp.PublishModTask
+
 plugins {
     id("fabric-loom") version "1.9-SNAPSHOT"
     `maven-publish`
@@ -111,6 +113,10 @@ publishing {
             }
         }
     }
+}
+
+tasks.withType<PublishModTask>().configureEach {
+    dependsOn(tasks.remapJar)
 }
 
 publishMods {

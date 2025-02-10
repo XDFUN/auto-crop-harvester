@@ -59,7 +59,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Publish with Gradle
-        run: ./gradlew build publish --stacktrace
+        run: ./gradlew build publish publishMods --stacktrace
         env:
           MOD_VERSION: ${{ github.event.inputs.version }}
           MAVEN_URL: ${{ secrets.MAVEN_URL }}

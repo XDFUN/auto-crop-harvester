@@ -22,6 +22,7 @@ jobs:
           fi
 
   publish:
+    needs: pre-publish
     strategy:
       matrix:
         # Use these Java versions

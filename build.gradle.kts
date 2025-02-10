@@ -120,7 +120,7 @@ publishMods {
     modLoaders.add("fabric")
 
     val curseforgeAccessToken: String? = null
-    val curseforgeMinecraftVersion = providers.environmentVariable("curseforge_minecraft_version").get()
+    val curseforgeMinecraftVersion = providers.environmentVariable("curseforge_minecraft_version").orNull
 
     val modrinthToken = project.providers.environmentVariable("MODRINTH_TOKEN").orNull
 
@@ -128,10 +128,10 @@ publishMods {
 
     // Currently not setup
 //    curseforge {
-//        dryRun = curseforgeAccessToken == null
+//        dryRun = curseforgeAccessToken == null || curseforgeMinecraftVersion == null
 //        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 //        projectId = "306612"
-//        minecraftVersions.add(curseforgeMinecraftVersion)
+//        minecraftVersions.add(curseforgeMinecraftVersion ?: "dryrun")
 //    }
 
     modrinth {

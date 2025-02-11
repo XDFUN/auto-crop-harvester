@@ -145,6 +145,13 @@ publishMods {
         accessToken = modrinthToken
         projectId = "h6cMODvx"
         minecraftVersions.add(minecraftVersion)
+
+        requires("fabric-api")
+
+        requires {
+            slug = "fabric-language-kotlin"
+            version = "476dzMG5"
+        }
     }
 
     github {

@@ -41,7 +41,7 @@ jobs:
         id: changelog
         with:
           config: cliff.toml
-          args: --verbose
+          args: --verbose -t ${{ github.event.inputs.version }}
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}

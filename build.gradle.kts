@@ -8,7 +8,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "0.4.5"
 }
 
-version = providers.environmentVariable("mod_version").orNull ?: project.properties["mod_version"]
+version = providers.environmentVariable("MOD_VERSION").orNull ?: project.properties["mod_version"]
         ?: throw IllegalStateException("mod_version must be set")
 project.version = version
 group = project.properties["maven_group"] ?: throw IllegalStateException("maven_group must be set")

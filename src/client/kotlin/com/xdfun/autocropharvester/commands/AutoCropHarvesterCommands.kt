@@ -59,7 +59,7 @@ class AutoCropHarvesterCommands {
                 }
 
             val getSneakAutoHarvest = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableSneakAutoHarvest.toString()))
                 1
             }
 
@@ -81,7 +81,7 @@ class AutoCropHarvesterCommands {
                 }
 
             val getPrematureAutoHarvest = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enablePrematureAutoHarvest.toString()))
                 1
             }
 
@@ -110,7 +110,7 @@ class AutoCropHarvesterCommands {
             val setAutoPlant = ClientCommandManager.literal("set").then(setAutoPlantCommand)
 
             val resetAutoPlant = ClientCommandManager.literal("reset").executes {
-                ConfigurationManager.INSTANCE.enablePrematureAutoHarvest = Configuration.ENABLE_PREMATURE_AUTO_HARVEST
+                ConfigurationManager.INSTANCE.enableAutoPlant = Configuration.ENABLE_AUTO_PLANT
                 1
             }
 

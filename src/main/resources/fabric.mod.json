@@ -1,45 +1,62 @@
 {
-	"schemaVersion": 1,
-	"id": "auto-crop-harvester",
-	"version": "${version}",
-	"name": "auto-crop-harvester",
-	"description": "A minecraft client-side fabric mod to auto harvest/plant crops. ",
-	"authors": [
-		"XDFUN"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "MIT",
-	"icon": "assets/auto-crop-harvester/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			{
-				"value": "com.xdfun.autocropharvester.AutoCropHarvester",
-				"adapter": "kotlin"
-			}
-		],
-		"client": [
-			{
-				"value": "com.xdfun.autocropharvester.AutoCropHarvesterClient",
-				"adapter": "kotlin"
-			}
-		]
-	},
-	"mixins": [
-		"auto-crop-harvester.mixins.json",
-		{
-			"config": "auto-crop-harvester.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.4",
-		"java": ">=21",
-		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
-	}
+  "schemaVersion": 1,
+  "id": "auto-crop-harvester",
+  "version": "${version}",
+  "name": "auto-crop-harvester",
+  "description": "A minecraft client-side fabric mod to auto harvest/plant crops. ",
+  "authors": [
+    "XDFUN"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/auto-crop-harvester/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.xdfun.autocropharvester.AutoCropHarvester",
+        "adapter": "kotlin"
+      }
+    ],
+    "client": [
+      {
+        "value": "com.xdfun.autocropharvester.AutoCropHarvesterClient",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "auto-crop-harvester.mixins.json",
+    {
+      "config": "auto-crop-harvester.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2302": [
+        "com/xdfun/autocropharvester/blocks/MaturableBlock"
+      ],
+      "net/minecraft/class_2421": [
+        "com/xdfun/autocropharvester/blocks/MaturableBlock"
+      ],
+      "net/minecraft/class_2523": [
+        "com/xdfun/autocropharvester/blocks/MaturableBlock"
+      ],
+      "net/minecraft/class_2344": [
+        "com/xdfun/autocropharvester/blocks/MutableBlock",
+        "com/xdfun/autocropharvester/blocks/OffsetBlock"
+      ]
+    }
+  },
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  }
 }

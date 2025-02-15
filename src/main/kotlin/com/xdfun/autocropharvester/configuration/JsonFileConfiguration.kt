@@ -29,6 +29,7 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
             prettyPrint = true
             encodeDefaults = true
             serializersModule = module
+            ignoreUnknownKeys = true
         }
 
         val INSTANCE: JsonFileConfiguration = JsonFileConfiguration()
@@ -82,7 +83,7 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
             configuration.enableAutoHarvest,
             configuration.enableSneakAutoHarvest,
             configuration.enablePrematureAutoHarvest,
-            configuration.enableAutoPlant
+            configuration.enableAutoPlant,
         )
 
         override fun convertToConfiguration(): Configuration {

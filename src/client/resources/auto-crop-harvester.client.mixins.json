@@ -1,11 +1,16 @@
 {
-	"required": true,
-	"package": "com.xdfun.autocropharvester.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-      "ClientPlayNetworkHandlerMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "com.xdfun.autocropharvester.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "CropBlockMixin",
+    "NetherWartBlockMixin",
+    "SugarCaneBlockMixin",
+    "FarmlandBlockMixin",
+    "SoulSandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

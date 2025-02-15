@@ -93,6 +93,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         if (inventory.mainHandStack.isEmpty.not() && inventory.mainHandStack.item == block.asItem()) {
             _logger.trace("Seed is already selected, no swap")
             plantMainHand(interactionManager, player, blockPos)
+            return
         }
 
         if (inventory.offHand.isEmpty().not()) {

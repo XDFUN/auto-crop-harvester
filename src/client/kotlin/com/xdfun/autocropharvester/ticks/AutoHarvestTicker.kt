@@ -12,7 +12,9 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import org.slf4j.Logger
+import kotlin.math.abs
 
 class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTickEvents.StartTick,
     ConfigurationChangedCallback {
@@ -41,7 +43,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
         }
     }
 
-    override fun interact(configuration: Configuration) {
+    override fun onConfigurationChanged(configuration: Configuration) {
         _configuration = configuration
     }
 
@@ -56,11 +58,36 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
             return
         }
 
-        val cropPos = player.blockPos
-        val cropBlockState = getCropBlockState(cropPos, world)
+        var absAutoHarvestRadius = abs(configuration.autoHarvestRadius)
+
+        if (player.blockInteractionRange < absAutoHarvestRadius) {
+            absAutoHarvestRadius = player.blockInteractionRange
+        }
+
+        val topLeftX = (player.x - absAutoHarvestRadius).toInt()
+        val bottomRightX = (player.x + absAutoHarvestRadius).toInt()
+        val topLeftZ = (player.z - absAutoHarvestRadius).toInt()
+        val bottomRightZ = (player.z + absAutoHarvestRadius).toInt()
+
+        for (x in topLeftX..bottomRightX) {
+            for (z in topLeftZ..bottomRightZ) {
+                val blockPos = BlockPos(x, player.blockPos.y, z)
+                harvestBlockPos(blockPos, client, player, world, configuration)
+            }
+        }
+    }
+
+    private fun harvestBlockPos(
+        blockPos: BlockPos,
+        client: MinecraftClient,
+        player: ClientPlayerEntity,
+        world: ClientWorld,
+        configuration: Configuration
+    ) {
+        val cropBlockState = getCropBlockState(blockPos, world)
 
         if (cropBlockState.block is MaturableBlock) {
-            harvestMaturableBlock(client, player, configuration, cropBlockState, cropPos)
+            harvestMaturableBlock(client, player, configuration, cropBlockState, blockPos)
         }
     }
 
@@ -110,9 +137,35 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
                 replantBlockState = world.getBlockState(attackBlockPos)
             }
 
-            AutoPlanter.INSTANCE?.notifyBlockBreakRequest(replantBlockState.block.asItem(), attackBlockPos)
+            AutoPlanter.Instance?.notifyBlockBreakRequest(replantBlockState.block.asItem(), attackBlockPos)
+            val direction = getDirectionFromHit(player.eyePos, attackBlockPos)
+            _logger.info("Direction: {}", direction)
 
-            client.interactionManager?.attackBlock(attackBlockPos, Direction.getFacing(player.eyePos))
+            if(client.interactionManager?.attackBlock(attackBlockPos, direction) == true){
+                _logger.info("Could attack block")
+            }
+        }
+    }
+
+    private fun getDirectionFromHit(eyePos: Vec3d, blockPos: BlockPos): Direction {
+        val blockVec3d = Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble())
+
+        val direction = blockVec3d.subtract(eyePos).normalize()
+
+        val absX = abs(direction.x)
+        val absY = abs(direction.y)
+        val absZ = abs(direction.z)
+
+        return when {
+            absX >= absY && absX >= absZ -> {
+                if (direction.x > 0) Direction.EAST else Direction.WEST
+            }
+            absY >= absX && absY >= absZ -> {
+                if (direction.y > 0) Direction.UP else Direction.DOWN
+            }
+            else -> {
+                if (direction.z > 0) Direction.SOUTH else Direction.NORTH
+            }
         }
     }
 }

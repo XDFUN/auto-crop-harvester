@@ -2,6 +2,7 @@ package com.xdfun.autocropharvester.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.xdfun.autocropharvester.configuration.Configuration
 import com.xdfun.autocropharvester.configuration.ConfigurationManager
@@ -21,6 +22,7 @@ class AutoCropHarvesterCommands {
                 .then(getSneakAutoHarvestCommands())
                 .then(getPrematureAutoHarvestCommands())
                 .then(getAutoPlantCommands())
+                .then(getAutoHarvestRadiusCommands())
 
             val commandRoot = ClientCommandManager.literal(ModIdUtils.MOD_ID).then(configRoot)
 
@@ -32,19 +34,19 @@ class AutoCropHarvesterCommands {
         private fun getAutoHarvestCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
             val setAutoHarvestCommand =
                 ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
-                    ConfigurationManager.INSTANCE.enableAutoHarvest = BoolArgumentType.getBool(context, "value")
+                    ConfigurationManager.Instance.enableAutoHarvest = BoolArgumentType.getBool(context, "value")
                     1
                 }
 
             val getAutoHarvest = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enableAutoHarvest.toString()))
                 1
             }
 
             val setAutoHarvest = ClientCommandManager.literal("set").then(setAutoHarvestCommand)
 
             val resetAutoHarvest = ClientCommandManager.literal("reset").executes {
-                ConfigurationManager.INSTANCE.enableAutoHarvest = Configuration.ENABLE_AUTO_HARVEST
+                ConfigurationManager.Instance.enableAutoHarvest = Configuration.ENABLE_AUTO_HARVEST
                 1
             }
 
@@ -54,19 +56,19 @@ class AutoCropHarvesterCommands {
         private fun getSneakAutoHarvestCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
             val setSneakAutoHarvestCommand =
                 ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
-                    ConfigurationManager.INSTANCE.enableSneakAutoHarvest = BoolArgumentType.getBool(context, "value")
+                    ConfigurationManager.Instance.enableSneakAutoHarvest = BoolArgumentType.getBool(context, "value")
                     1
                 }
 
             val getSneakAutoHarvest = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableSneakAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enableSneakAutoHarvest.toString()))
                 1
             }
 
             val setSneakAutoHarvest = ClientCommandManager.literal("set").then(setSneakAutoHarvestCommand)
 
             val resetSneakAutoHarvest = ClientCommandManager.literal("reset").executes {
-                ConfigurationManager.INSTANCE.enableSneakAutoHarvest = Configuration.ENABLE_SNEAK_AUTO_HARVEST
+                ConfigurationManager.Instance.enableSneakAutoHarvest = Configuration.ENABLE_SNEAK_AUTO_HARVEST
                 1
             }
 
@@ -76,19 +78,19 @@ class AutoCropHarvesterCommands {
         private fun getPrematureAutoHarvestCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
             val setPrematureAutoHarvestCommand =
                 ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
-                    ConfigurationManager.INSTANCE.enablePrematureAutoHarvest = BoolArgumentType.getBool(context, "value")
+                    ConfigurationManager.Instance.enablePrematureAutoHarvest = BoolArgumentType.getBool(context, "value")
                     1
                 }
 
             val getPrematureAutoHarvest = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enablePrematureAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enablePrematureAutoHarvest.toString()))
                 1
             }
 
             val setPrematureAutoHarvest = ClientCommandManager.literal("set").then(setPrematureAutoHarvestCommand)
 
             val resetPrematureAutoHarvest = ClientCommandManager.literal("reset").executes {
-                ConfigurationManager.INSTANCE.enablePrematureAutoHarvest = Configuration.ENABLE_PREMATURE_AUTO_HARVEST
+                ConfigurationManager.Instance.enablePrematureAutoHarvest = Configuration.ENABLE_PREMATURE_AUTO_HARVEST
                 1
             }
 
@@ -98,23 +100,45 @@ class AutoCropHarvesterCommands {
         private fun getAutoPlantCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
             val setAutoPlantCommand =
                 ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
-                    ConfigurationManager.INSTANCE.enableAutoPlant = BoolArgumentType.getBool(context, "value")
+                    ConfigurationManager.Instance.enableAutoPlant = BoolArgumentType.getBool(context, "value")
                     1
                 }
 
             val getAutoPlant = ClientCommandManager.literal("get").executes { context ->
-                context.source.sendFeedback(Text.literal(ConfigurationManager.INSTANCE.enableAutoHarvest.toString()))
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enableAutoPlant.toString()))
                 1
             }
 
             val setAutoPlant = ClientCommandManager.literal("set").then(setAutoPlantCommand)
 
             val resetAutoPlant = ClientCommandManager.literal("reset").executes {
-                ConfigurationManager.INSTANCE.enableAutoPlant = Configuration.ENABLE_AUTO_PLANT
+                ConfigurationManager.Instance.enableAutoPlant = Configuration.ENABLE_AUTO_PLANT
                 1
             }
 
             return ClientCommandManager.literal("auto_plant").then(setAutoPlant).then(getAutoPlant).then(resetAutoPlant)
+        }
+
+        private fun getAutoHarvestRadiusCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
+            val setAutoHarvestCommand =
+                ClientCommandManager.argument("value", DoubleArgumentType.doubleArg(0.0, 4.5)).executes { context ->
+                    ConfigurationManager.Instance.autoHarvestRadius = DoubleArgumentType.getDouble(context, "value")
+                    1
+                }
+
+            val getAutoHarvestRadius = ClientCommandManager.literal("get").executes { context ->
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.autoHarvestRadius.toString()))
+                1
+            }
+
+            val setAutoHarvestRadius = ClientCommandManager.literal("set").then(setAutoHarvestCommand)
+
+            val resetAutoHarvestRadius = ClientCommandManager.literal("reset").executes {
+                ConfigurationManager.Instance.autoHarvestRadius = Configuration.AUTO_HARVEST_RADIUS
+                1
+            }
+
+            return ClientCommandManager.literal("auto_harvest_radius").then(setAutoHarvestRadius).then(getAutoHarvestRadius).then(resetAutoHarvestRadius)
         }
     }
 }

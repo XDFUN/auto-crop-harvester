@@ -2,7 +2,7 @@ package com.xdfun.autocropharvester.configuration
 
 class ConfigurationManager private constructor() : Configuration {
     companion object {
-        val INSTANCE = ConfigurationManager()
+        val Instance = ConfigurationManager()
     }
 
     private var _configuration: MutableConfiguration = MutableConfiguration(DefaultConfiguration())
@@ -41,8 +41,15 @@ class ConfigurationManager private constructor() : Configuration {
             invokeConfigurationChangedCallback()
         }
 
+    override var autoHarvestRadius: Double
+        get() = _configuration.autoHarvestRadius
+        set(value) {
+            _configuration.autoHarvestRadius = value
+            invokeConfigurationChangedCallback()
+        }
+
     private fun invokeConfigurationChangedCallback() {
-        ConfigurationChangedCallback.EVENT.invoker().interact(_configuration)
+        ConfigurationChangedCallback.EVENT.invoker().onConfigurationChanged(_configuration)
     }
 
     private class MutableConfiguration(configuration: Configuration) : Configuration {
@@ -50,5 +57,6 @@ class ConfigurationManager private constructor() : Configuration {
         override var enableSneakAutoHarvest: Boolean = configuration.enableSneakAutoHarvest
         override var enablePrematureAutoHarvest: Boolean = configuration.enablePrematureAutoHarvest
         override var enableAutoPlant: Boolean = configuration.enableAutoPlant
+        override var autoHarvestRadius: Double = configuration.autoHarvestRadius
     }
 }

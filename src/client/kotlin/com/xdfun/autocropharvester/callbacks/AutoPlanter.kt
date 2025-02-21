@@ -2,6 +2,7 @@ package com.xdfun.autocropharvester.callbacks
 
 import com.xdfun.autocropharvester.configuration.Configuration
 import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
+import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
@@ -9,7 +10,6 @@ import net.minecraft.client.network.ClientPlayerInteractionManager
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
@@ -20,7 +20,7 @@ import org.slf4j.Logger
 class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationChangedCallback {
 
     companion object {
-        var INSTANCE: AutoPlanter? = null
+        var Instance: AutoPlanter? = null
             private set
     }
 
@@ -29,7 +29,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
     private val _requestBlockBreaks: MutableMap<BlockPos, Item> = mutableMapOf()
 
     init {
-        INSTANCE = this
+        Instance = this
     }
 
     fun notifyBlockBreakRequest(seedItem: Item, blockPos: BlockPos) {
@@ -37,10 +37,8 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         _requestBlockBreaks[blockPos] = seedItem
     }
 
-    fun onBlockUpdate(packet: BlockUpdateS2CPacket) {
-        val blockPos = packet.pos
-
-        if(packet.state.block != Blocks.AIR) {
+    fun onBlockUpdate(blockPos: BlockPos, blockState: BlockState) {
+        if(blockState.block != Blocks.AIR) {
             return
         }
 
@@ -78,7 +76,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         plant(client, interactionManager, player, configuration, seedItem, blockPos)
     }
 
-    override fun interact(configuration: Configuration) {
+    override fun onConfigurationChanged(configuration: Configuration) {
         _configuration = configuration
     }
 
@@ -102,14 +100,7 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
             val offHandStack = inventory.offHand.firstOrNull { it.item == seedItem }
 
             if (offHandStack != null) {
-                _logger.trace("Seed is in offhand, no swap")
-                val result = interactionManager.interactBlock(
-                    player,
-                    Hand.OFF_HAND,
-                    BlockHitResult(player.pos, Direction.UP, blockPos, false)
-                )
-                _logger.trace("Off hand plant result: {}", result)
-
+                plantWithHand(interactionManager, player, blockPos, Hand.OFF_HAND)
                 return
             }
         }
@@ -180,14 +171,23 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         player: ClientPlayerEntity,
         blockPos: BlockPos
     ) {
-        val underCrop = blockPos
-        _logger.trace("Plant with main hand at pos: {}", underCrop)
+        plantWithHand(interactionManager, player, blockPos, Hand.MAIN_HAND)
+    }
+
+    private fun plantWithHand(
+        interactionManager: ClientPlayerInteractionManager,
+        player: ClientPlayerEntity,
+        blockPos: BlockPos,
+        hand: Hand
+    ){
+        val centerPos = blockPos.toCenterPos()
+        _logger.trace("Plant with main hand at pos: {}", centerPos)
         val result = interactionManager.interactBlock(
             player,
-            Hand.MAIN_HAND,
-            BlockHitResult(player.pos, Direction.UP, underCrop, false)
+            hand,
+            BlockHitResult(centerPos, Direction.UP, blockPos, false)
         )
-        _logger.trace("Plant result: {}", result)
+        _logger.debug("Plant result: {}", result)
     }
 
     private fun swapItems(

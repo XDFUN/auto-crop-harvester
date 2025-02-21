@@ -25,7 +25,7 @@ object AutoCropHarvesterClient : ClientModInitializer {
         ConfigurationChangedCallback.EVENT.register(harvestTicker)
         ConfigurationChangedCallback.EVENT.register(autoPlanter)
 
-        ConfigurationManager.INSTANCE.initialize(configuration)
+        ConfigurationManager.Instance.initialize(configuration)
 
         AutoCropHarvesterCommands.registerCommands()
 

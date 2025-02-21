@@ -9,14 +9,14 @@ interface ConfigurationChangedCallback {
             ConfigurationChangedCallback::class.java
         ) { listeners ->
             object : ConfigurationChangedCallback {
-                override fun interact(configuration: Configuration) {
+                override fun onConfigurationChanged(configuration: Configuration) {
                     for (listener in listeners) {
-                        listener.interact(configuration)
+                        listener.onConfigurationChanged(configuration)
                     }
                 }
             }
         }
     }
 
-    fun interact(configuration: Configuration)
+    fun onConfigurationChanged(configuration: Configuration)
 }

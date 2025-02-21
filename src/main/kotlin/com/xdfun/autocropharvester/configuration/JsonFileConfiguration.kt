@@ -47,7 +47,7 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
         return config.convertToConfiguration()
     }
 
-    override fun interact(configuration: Configuration) {
+    override fun onConfigurationChanged(configuration: Configuration) {
         val fileContent =
             jsonSerializer.encodeToString<SerializableConfiguration>(getSerializableConfiguration(configuration))
 
@@ -78,12 +78,14 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
         override val enableSneakAutoHarvest: Boolean = Configuration.ENABLE_SNEAK_AUTO_HARVEST,
         override val enablePrematureAutoHarvest: Boolean = Configuration.ENABLE_PREMATURE_AUTO_HARVEST,
         override val enableAutoPlant: Boolean = Configuration.ENABLE_AUTO_PLANT,
+        override val autoHarvestRadius: Double = Configuration.AUTO_HARVEST_RADIUS,
     ) : SerializableConfiguration, Configuration {
         constructor(configuration: Configuration) : this(
             configuration.enableAutoHarvest,
             configuration.enableSneakAutoHarvest,
             configuration.enablePrematureAutoHarvest,
             configuration.enableAutoPlant,
+            configuration.autoHarvestRadius
         )
 
         override fun convertToConfiguration(): Configuration {

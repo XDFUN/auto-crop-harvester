@@ -33,11 +33,23 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
     }
 
     fun notifyBlockBreakRequest(seedItem: Item, blockPos: BlockPos) {
+        if (_configuration.enableAutoPlant.not()) {
+            _logger.info("Auto plant is disabled.")
+            return
+        }
+
         _logger.trace("Notified break at: {}", blockPos)
         _requestBlockBreaks[blockPos] = seedItem
     }
 
     fun onBlockUpdate(blockPos: BlockPos, blockState: BlockState) {
+        val configuration = _configuration
+
+        if (configuration.enableAutoPlant.not()) {
+            _logger.trace("Auto plant is disabled.")
+            return
+        }
+
         if(blockState.block != Blocks.AIR) {
             return
         }
@@ -55,13 +67,6 @@ class AutoPlanter(configuration: Configuration, logger: Logger) : ConfigurationC
         }
 
         _logger.trace("Block state {}", seedItem)
-
-        val configuration = _configuration
-
-        if (configuration.enableAutoPlant.not()) {
-            _logger.trace("Auto plant is disabled.")
-            return
-        }
 
         val client = MinecraftClient.getInstance()
         val world = client?.world

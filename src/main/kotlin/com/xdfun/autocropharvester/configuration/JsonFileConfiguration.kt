@@ -79,13 +79,17 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
         override val enablePrematureAutoHarvest: Boolean = Configuration.ENABLE_PREMATURE_AUTO_HARVEST,
         override val enableAutoPlant: Boolean = Configuration.ENABLE_AUTO_PLANT,
         override val autoHarvestRadius: Double = Configuration.AUTO_HARVEST_RADIUS,
+        override val enablePlayerAutoPlant: Boolean = Configuration.ENABLE_PLAYER_AUTO_PLANT,
+        override val enablePrematureAutoPlant: Boolean = Configuration.ENABLE_PREMATURE_AUTO_PLANT
     ) : SerializableConfiguration, Configuration {
         constructor(configuration: Configuration) : this(
             configuration.enableAutoHarvest,
             configuration.enableSneakAutoHarvest,
             configuration.enablePrematureAutoHarvest,
             configuration.enableAutoPlant,
-            configuration.autoHarvestRadius
+            configuration.autoHarvestRadius,
+            configuration.enablePlayerAutoPlant,
+            configuration.enablePrematureAutoPlant
         )
 
         override fun convertToConfiguration(): Configuration {

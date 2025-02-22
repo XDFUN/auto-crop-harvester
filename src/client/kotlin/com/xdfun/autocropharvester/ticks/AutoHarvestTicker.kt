@@ -139,10 +139,10 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
 
             AutoPlanter.Instance?.notifyBlockBreakRequest(replantBlockState.block.asItem(), attackBlockPos)
             val direction = getDirectionFromHit(player.eyePos, attackBlockPos)
-            _logger.info("Direction: {}", direction)
+            _logger.trace("Direction: {}", direction)
 
             if(client.interactionManager?.attackBlock(attackBlockPos, direction) == true){
-                _logger.info("Could attack block")
+                _logger.trace("Could attack block")
             }
         }
     }

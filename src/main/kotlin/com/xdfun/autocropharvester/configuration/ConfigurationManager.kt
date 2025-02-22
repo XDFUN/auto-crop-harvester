@@ -48,6 +48,20 @@ class ConfigurationManager private constructor() : Configuration {
             invokeConfigurationChangedCallback()
         }
 
+    override var enablePlayerAutoPlant: Boolean
+        get() = _configuration.enablePlayerAutoPlant
+        set(value) {
+            _configuration.enablePlayerAutoPlant = value
+            invokeConfigurationChangedCallback()
+        }
+
+    override var enablePrematureAutoPlant: Boolean
+        get() = _configuration.enablePrematureAutoPlant
+        set(value) {
+            _configuration.enablePrematureAutoPlant = value
+            invokeConfigurationChangedCallback()
+        }
+
     private fun invokeConfigurationChangedCallback() {
         ConfigurationChangedCallback.EVENT.invoker().onConfigurationChanged(_configuration)
     }
@@ -58,5 +72,7 @@ class ConfigurationManager private constructor() : Configuration {
         override var enablePrematureAutoHarvest: Boolean = configuration.enablePrematureAutoHarvest
         override var enableAutoPlant: Boolean = configuration.enableAutoPlant
         override var autoHarvestRadius: Double = configuration.autoHarvestRadius
+        override var enablePlayerAutoPlant: Boolean = configuration.enablePlayerAutoPlant
+        override var enablePrematureAutoPlant: Boolean = configuration.enablePrematureAutoPlant
     }
 }

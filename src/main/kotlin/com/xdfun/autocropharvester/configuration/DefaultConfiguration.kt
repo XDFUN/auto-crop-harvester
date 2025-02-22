@@ -6,4 +6,6 @@ class DefaultConfiguration(
     override val enablePrematureAutoHarvest: Boolean = Configuration.ENABLE_PREMATURE_AUTO_HARVEST,
     override val enableAutoPlant: Boolean = Configuration.ENABLE_AUTO_PLANT,
     override val autoHarvestRadius: Double = Configuration.AUTO_HARVEST_RADIUS,
+    override val enablePlayerAutoPlant: Boolean = Configuration.ENABLE_PLAYER_AUTO_PLANT,
+    override val enablePrematureAutoPlant: Boolean = Configuration.ENABLE_PREMATURE_AUTO_PLANT
 ) : Configuration

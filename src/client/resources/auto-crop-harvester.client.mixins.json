@@ -3,6 +3,7 @@
   "package": "com.xdfun.autocropharvester.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "MinecraftClientMixin",
     "ClientWorldMixin",
     "CropBlockMixin",
     "NetherWartBlockMixin",

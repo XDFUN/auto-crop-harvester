@@ -23,6 +23,8 @@ class AutoCropHarvesterCommands {
                 .then(getPrematureAutoHarvestCommands())
                 .then(getAutoPlantCommands())
                 .then(getAutoHarvestRadiusCommands())
+                .then(getPlayerAutoPlantCommands())
+                .then(getPrematureAutoPlantCommands())
 
             val commandRoot = ClientCommandManager.literal(ModIdUtils.MOD_ID).then(configRoot)
 
@@ -120,7 +122,7 @@ class AutoCropHarvesterCommands {
         }
 
         private fun getAutoHarvestRadiusCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
-            val setAutoHarvestCommand =
+            val setAutoHarvestRadiusCommand =
                 ClientCommandManager.argument("value", DoubleArgumentType.doubleArg(0.0, 4.5)).executes { context ->
                     ConfigurationManager.Instance.autoHarvestRadius = DoubleArgumentType.getDouble(context, "value")
                     1
@@ -131,7 +133,7 @@ class AutoCropHarvesterCommands {
                 1
             }
 
-            val setAutoHarvestRadius = ClientCommandManager.literal("set").then(setAutoHarvestCommand)
+            val setAutoHarvestRadius = ClientCommandManager.literal("set").then(setAutoHarvestRadiusCommand)
 
             val resetAutoHarvestRadius = ClientCommandManager.literal("reset").executes {
                 ConfigurationManager.Instance.autoHarvestRadius = Configuration.AUTO_HARVEST_RADIUS
@@ -139,6 +141,50 @@ class AutoCropHarvesterCommands {
             }
 
             return ClientCommandManager.literal("auto_harvest_radius").then(setAutoHarvestRadius).then(getAutoHarvestRadius).then(resetAutoHarvestRadius)
+        }
+
+        private fun getPlayerAutoPlantCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
+            val setPlayerAutoPlantCommand =
+                ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
+                    ConfigurationManager.Instance.enablePlayerAutoPlant = BoolArgumentType.getBool(context, "value")
+                    1
+                }
+
+            val getPlayerAutoPlant = ClientCommandManager.literal("get").executes { context ->
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enablePlayerAutoPlant.toString()))
+                1
+            }
+
+            val setPlayerAutoPlant = ClientCommandManager.literal("set").then(setPlayerAutoPlantCommand)
+
+            val resetPrematureAutoPlant = ClientCommandManager.literal("reset").executes {
+                ConfigurationManager.Instance.enablePlayerAutoPlant = Configuration.ENABLE_PLAYER_AUTO_PLANT
+                1
+            }
+
+            return ClientCommandManager.literal("player_auto_plant").then(setPlayerAutoPlant).then(getPlayerAutoPlant).then(resetPrematureAutoPlant)
+        }
+
+        private fun getPrematureAutoPlantCommands(): LiteralArgumentBuilder<FabricClientCommandSource> {
+            val setPrematureAutoPlantCommand =
+                ClientCommandManager.argument("value", BoolArgumentType.bool()).executes { context ->
+                    ConfigurationManager.Instance.enablePrematureAutoPlant = BoolArgumentType.getBool(context, "value")
+                    1
+                }
+
+            val getPrematureAutoPlant = ClientCommandManager.literal("get").executes { context ->
+                context.source.sendFeedback(Text.literal(ConfigurationManager.Instance.enablePrematureAutoPlant.toString()))
+                1
+            }
+
+            val setPrematureAutoPlant = ClientCommandManager.literal("set").then(setPrematureAutoPlantCommand)
+
+            val resetPrematureAutoPlant = ClientCommandManager.literal("reset").executes {
+                ConfigurationManager.Instance.enablePrematureAutoPlant = Configuration.ENABLE_PREMATURE_AUTO_PLANT
+                1
+            }
+
+            return ClientCommandManager.literal("premature_auto_plant").then(setPrematureAutoPlant).then(getPrematureAutoPlant).then(resetPrematureAutoPlant)
         }
     }
 }

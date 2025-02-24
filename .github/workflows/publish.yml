@@ -41,7 +41,7 @@ jobs:
         id: changelog
         with:
           config: cliff.toml
-          args: --verbose -t ${{ github.event.inputs.version }} --latest
+          args: --verbose -t ${{ github.event.inputs.version }} --unreleased --sort newest
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}

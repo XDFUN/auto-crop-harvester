@@ -1,4 +1,7 @@
-# Auto Crop Harvester
+<div align="center">
+  <h1>Auto Crop Harvester</h1>
+  <img src="resources/icon.png" width="20%" height="20%">
+</div>
 
 A fabric client-side mod to automatically harvest and replant crops in player proximity.
 

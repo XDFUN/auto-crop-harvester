@@ -120,25 +120,25 @@ tasks.withType<PublishModTask>().configureEach {
 }
 
 publishMods {
-    file = tasks.remapJar.get().archiveFile.get().asFile
+    val modFile = tasks.remapJar.orNull?.archiveFile?.orNull?.asFile ?: throw IllegalStateException("Could not retrieve file from task 'remapJar'. ")
+    file = modFile
     changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
     type.set(if (project.properties["prerelease"] == "true") BETA else STABLE)
     modLoaders.add("fabric")
 
-    val curseforgeAccessToken: String? = null
-    val curseforgeMinecraftVersion = providers.environmentVariable("curseforge_minecraft_version").orNull
+    val curseforgeAccessToken: String? = providers.environmentVariable("CURSEFORGE_API_KEY").orNull
 
     val modrinthToken = project.providers.environmentVariable("MODRINTH_TOKEN").orNull
 
     val githubToken: String? = providers.environmentVariable("GITHUB_TOKEN").orNull
 
-    // Currently not setup
-//    curseforge {
-//        dryRun = curseforgeAccessToken.isNullOrEmpty() || curseforgeMinecraftVersion.isNullOrEmpty()
-//        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-//        projectId = "306612"
-//        minecraftVersions.add(curseforgeMinecraftVersion ?: "dryrun")
-//    }
+    curseforge {
+        dryRun = curseforgeAccessToken.isNullOrEmpty()
+        accessToken = curseforgeAccessToken
+        projectId = "1208878"
+        minecraftVersions.add(minecraftVersion)
+        displayName = modFile.name
+    }
 
     modrinth {
         dryRun = modrinthToken.isNullOrEmpty()

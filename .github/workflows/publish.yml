@@ -6,6 +6,19 @@ on:
         description: The version of the release
         required: true
         type: string
+      type:
+        description: The type of the release
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - alpha
+          - beta
+      iteration:
+        description: The iteration of the release.
+        required: false
+        type: number
 
 permissions:
   contents: write
@@ -62,6 +75,8 @@ jobs:
         run: ./gradlew build publish publishMods -Pversion=${{ github.event.inputs.version }} --stacktrace
         env:
           MOD_VERSION: ${{ github.event.inputs.version }}
+          MOD_VERSION_TYPE: ${{ github.event.inputs.type }}
+          MOD_VERSION_ITERATION: ${{ github.event.inputs.iteration }}
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}

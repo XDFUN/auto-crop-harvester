@@ -5,11 +5,21 @@ plugins {
     `maven-publish`
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.10"
-    id("me.modmuss50.mod-publish-plugin") version "0.4.5"
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 }
 
-version = providers.environmentVariable("MOD_VERSION").orNull ?: project.properties["mod_version"]
-        ?: throw IllegalStateException("mod_version must be set")
+var modVersion: String =
+    providers.environmentVariable("MOD_VERSION").orNull ?: project.properties["mod_version"]?.toString()
+    ?: throw IllegalStateException("mod_version must be set")
+
+val modVersionType = providers.environmentVariable("MOD_VERSION_TYPE").orNull
+val modVersionIteration = providers.environmentVariable("MOD_VERSION_ITERATION").orNull
+
+if (modVersionType != null) {
+    modVersion = "$modVersion-$modVersionType$modVersionIteration"
+}
+
+version = modVersion
 project.version = version
 group = project.properties["maven_group"] ?: throw IllegalStateException("maven_group must be set")
 
@@ -120,10 +130,22 @@ tasks.withType<PublishModTask>().configureEach {
 }
 
 publishMods {
-    val modFile = tasks.remapJar.orNull?.archiveFile?.orNull?.asFile ?: throw IllegalStateException("Could not retrieve file from task 'remapJar'. ")
+    val modFile = tasks.remapJar.orNull?.archiveFile?.orNull?.asFile
+        ?: throw IllegalStateException("Could not retrieve file from task 'remapJar'. ")
     file = modFile
     changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
-    type.set(if (project.properties["prerelease"] == "true") BETA else STABLE)
+
+    if (modVersionType != null) {
+        type.set(STABLE)
+        if (modVersionType.equals("alpha", true)) {
+            type.set(ALPHA)
+        }
+
+        if (modVersionType.equals("beta", true)) {
+            type.set(BETA)
+        }
+    }
+
     modLoaders.add("fabric")
 
     val curseforgeAccessToken: String? = providers.environmentVariable("CURSEFORGE_API_KEY").orNull
@@ -137,7 +159,10 @@ publishMods {
         accessToken = curseforgeAccessToken
         projectId = "1208878"
         minecraftVersions.add(minecraftVersion)
-        displayName = modFile.name
+
+        clientRequired = true
+
+        requires("fabric-api", "fabric-language-kotlin")
     }
 
     modrinth {

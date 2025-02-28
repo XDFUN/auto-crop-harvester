@@ -13,7 +13,7 @@ Id: h6cMODvx\
 Slug: auto-crop-harvester\
 URL: https://modrinth.com/mod/auto-crop-harvester
 
-## CurseForge
+### CurseForge
 
 Id: 1208878\
 Slug: auto-crop-harvester\

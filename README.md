@@ -13,6 +13,12 @@ Id: h6cMODvx\
 Slug: auto-crop-harvester\
 URL: https://modrinth.com/mod/auto-crop-harvester
 
+## CurseForge
+
+Id: 1208878\
+Slug: auto-crop-harvester\
+URL: https://www.curseforge.com/minecraft/mc-mods/auto-crop-harvester
+
 ### Github
 
 1. Download the `.jar` from the release.

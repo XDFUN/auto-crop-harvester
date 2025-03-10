@@ -1,8 +1,8 @@
-package com.xdfun.autocropharvester.configuration
+package com.xdfun.autocropharvester.configuration.json
 
+import com.xdfun.autocropharvester.configuration.Configuration
+import com.xdfun.autocropharvester.configuration.events.ConfigurationChangedCallback
 import com.xdfun.autocropharvester.utils.ModIdUtils
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import net.fabricmc.loader.api.FabricLoader
@@ -23,6 +23,11 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
                 SerializableConfigurationV1::class,
                 SerializableConfigurationV1.serializer()
             )
+            polymorphic(
+                SerializableConfiguration::class,
+                SerializableConfigurationV2::class,
+                SerializableConfigurationV2.serializer()
+            )
         }
 
         private val jsonSerializer: Json = Json {
@@ -32,12 +37,12 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
             ignoreUnknownKeys = true
         }
 
-        val INSTANCE: JsonFileConfiguration = JsonFileConfiguration()
+        val Instance: JsonFileConfiguration = JsonFileConfiguration()
     }
 
     fun load(): Configuration {
         if (configFile.exists().not()) {
-            return SerializableConfigurationV1()
+            return SerializableConfigurationV2()
         }
 
         _logger.trace("Deserializing configuration from file")
@@ -56,7 +61,7 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
     }
 
     private fun getSerializableConfiguration(configuration: Configuration): SerializableConfiguration {
-        val config = SerializableConfigurationV1(configuration)
+        val config = SerializableConfigurationV2(configuration)
 
         @Suppress("USELESS_IS_CHECK")
         // Ensure that the config implements Configuration, else it could result in unexpected behavior when saving
@@ -65,35 +70,5 @@ class JsonFileConfiguration private constructor() : ConfigurationChangedCallback
         }
 
         return config
-    }
-
-    private interface SerializableConfiguration {
-        fun convertToConfiguration(): Configuration
-    }
-
-    @Serializable
-    @SerialName("v1.0.0")
-    private data class SerializableConfigurationV1(
-        override val enableAutoHarvest: Boolean = Configuration.ENABLE_AUTO_HARVEST,
-        override val enableSneakAutoHarvest: Boolean = Configuration.ENABLE_SNEAK_AUTO_HARVEST,
-        override val enablePrematureAutoHarvest: Boolean = Configuration.ENABLE_PREMATURE_AUTO_HARVEST,
-        override val enableAutoPlant: Boolean = Configuration.ENABLE_AUTO_PLANT,
-        override val autoHarvestRadius: Double = Configuration.AUTO_HARVEST_RADIUS,
-        override val enablePlayerAutoPlant: Boolean = Configuration.ENABLE_PLAYER_AUTO_PLANT,
-        override val enablePrematureAutoPlant: Boolean = Configuration.ENABLE_PREMATURE_AUTO_PLANT
-    ) : SerializableConfiguration, Configuration {
-        constructor(configuration: Configuration) : this(
-            configuration.enableAutoHarvest,
-            configuration.enableSneakAutoHarvest,
-            configuration.enablePrematureAutoHarvest,
-            configuration.enableAutoPlant,
-            configuration.autoHarvestRadius,
-            configuration.enablePlayerAutoPlant,
-            configuration.enablePrematureAutoPlant
-        )
-
-        override fun convertToConfiguration(): Configuration {
-            return this
-        }
     }
 }

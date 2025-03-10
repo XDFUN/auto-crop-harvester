@@ -1,11 +1,12 @@
-package com.xdfun.autocropharvester.configuration
+package com.xdfun.autocropharvester.configuration.events
 
+import com.xdfun.autocropharvester.configuration.Configuration
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 
 interface ConfigurationChangedCallback {
     companion object {
-        var EVENT: Event<ConfigurationChangedCallback> = EventFactory.createArrayBacked(
+        var Event: Event<ConfigurationChangedCallback> = EventFactory.createArrayBacked(
             ConfigurationChangedCallback::class.java
         ) { listeners ->
             object : ConfigurationChangedCallback {

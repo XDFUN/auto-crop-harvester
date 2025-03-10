@@ -1,8 +1,8 @@
 package com.xdfun.autocropharvester.mixin.client;
 
 import com.xdfun.autocropharvester.blocks.MaturableBlock;
-import com.xdfun.autocropharvester.callbacks.AutoPlanter;
-import com.xdfun.autocropharvester.configuration.ConfigurationManager;
+import com.xdfun.autocropharvester.configuration.manager.ConfigurationManager;
+import com.xdfun.autocropharvester.planter.PlayerAutoPlanter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -29,9 +29,9 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "doAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;attackBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z"))
     private void onPlayerAttackBlock(CallbackInfoReturnable<Boolean> cir) {
-        var configuration = ConfigurationManager.Companion.getInstance();
+        var configuration = ConfigurationManager.Companion.getInstance().getPlayerConfiguration();
 
-        if(!configuration.getEnablePlayerAutoPlant()){
+        if(!configuration.getEnableAutoPlant()){
             return;
         }
 
@@ -49,7 +49,7 @@ public abstract class MinecraftClientMixin {
             Block block = state.getBlock();
 
             if (block instanceof MaturableBlock) {
-                var planter = AutoPlanter.Companion.getInstance();
+                var planter = PlayerAutoPlanter.Companion.getInstance();
 
                 if(planter == null) {
                     return;

@@ -2,9 +2,9 @@ package com.xdfun.autocropharvester.ticks
 
 import com.xdfun.autocropharvester.blocks.MaturableBlock
 import com.xdfun.autocropharvester.blocks.OffsetBlock
-import com.xdfun.autocropharvester.callbacks.AutoPlanter
-import com.xdfun.autocropharvester.configuration.Configuration
-import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
+import com.xdfun.autocropharvester.planter.HarvesterAutoPlanter
+import com.xdfun.autocropharvester.configuration.HarvesterConfiguration
+import com.xdfun.autocropharvester.configuration.events.HarvesterConfigurationChangedCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
@@ -16,10 +16,10 @@ import net.minecraft.util.math.Vec3d
 import org.slf4j.Logger
 import kotlin.math.abs
 
-class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTickEvents.StartTick,
-    ConfigurationChangedCallback {
+class AutoHarvestTicker(configuration: HarvesterConfiguration, logger: Logger) : ClientTickEvents.StartTick,
+    HarvesterConfigurationChangedCallback {
     private val _logger = logger
-    private var _configuration: Configuration = configuration
+    private var _configuration: HarvesterConfiguration = configuration
 
     override fun onStartTick(client: MinecraftClient?) {
         val configuration = _configuration
@@ -43,7 +43,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
         }
     }
 
-    override fun onConfigurationChanged(configuration: Configuration) {
+    override fun onConfigurationChanged(configuration: HarvesterConfiguration) {
         _configuration = configuration
     }
 
@@ -51,7 +51,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
         client: MinecraftClient,
         player: ClientPlayerEntity,
         world: ClientWorld,
-        configuration: Configuration
+        configuration: HarvesterConfiguration
     ) {
         if (canSneakAutoHarvest(configuration, player).not()) {
             _logger.debug("Auto harvest skipped. Player is sneaking and sneak auto harvest is disabled.")
@@ -82,7 +82,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
         client: MinecraftClient,
         player: ClientPlayerEntity,
         world: ClientWorld,
-        configuration: Configuration
+        configuration: HarvesterConfiguration
     ) {
         val cropBlockState = getCropBlockState(blockPos, world)
 
@@ -91,7 +91,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
         }
     }
 
-    private fun canSneakAutoHarvest(configuration: Configuration, player: ClientPlayerEntity): Boolean {
+    private fun canSneakAutoHarvest(configuration: HarvesterConfiguration, player: ClientPlayerEntity): Boolean {
         return configuration.enableSneakAutoHarvest || player.isSneaking.not()
     }
 
@@ -104,7 +104,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
     }
 
     private fun canHarvestCropBlock(
-        configuration: Configuration,
+        configuration: HarvesterConfiguration,
         cropBlock: MaturableBlock,
         cropBlockState: BlockState,
         blockPos: BlockPos
@@ -115,7 +115,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
     private fun harvestMaturableBlock(
         client: MinecraftClient,
         player: ClientPlayerEntity,
-        configuration: Configuration,
+        configuration: HarvesterConfiguration,
         blockState: BlockState,
         blockPos: BlockPos
     ) {
@@ -137,7 +137,7 @@ class AutoHarvestTicker(configuration: Configuration, logger: Logger) : ClientTi
                 replantBlockState = world.getBlockState(attackBlockPos)
             }
 
-            AutoPlanter.Instance?.notifyBlockBreakRequest(replantBlockState.block.asItem(), attackBlockPos)
+            HarvesterAutoPlanter.Instance?.notifyBlockBreakRequest(replantBlockState.block.asItem(), attackBlockPos)
             val direction = getDirectionFromHit(player.eyePos, attackBlockPos)
             _logger.trace("Direction: {}", direction)
 

@@ -47,7 +47,7 @@
         "com/xdfun/autocropharvester/blocks/MaturableBlock"
       ],
       "net/minecraft/class_2344": [
-        "com/xdfun/autocropharvester/blocks/MutableBlock",
+        "com/xdfun/autocropharvester/blocks/MaturableBlock",
         "com/xdfun/autocropharvester/blocks/OffsetBlock"
       ]
     }

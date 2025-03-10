@@ -1,11 +1,11 @@
 package com.xdfun.autocropharvester
 
-import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
-import com.xdfun.autocropharvester.configuration.JsonFileConfiguration
+import com.xdfun.autocropharvester.configuration.events.ConfigurationChangedCallback
+import com.xdfun.autocropharvester.configuration.json.JsonFileConfiguration
 import net.fabricmc.api.ModInitializer
 
 object AutoCropHarvester : ModInitializer {
 	override fun onInitialize() {
-		ConfigurationChangedCallback.EVENT.register(JsonFileConfiguration.INSTANCE)
+		ConfigurationChangedCallback.Event.register(JsonFileConfiguration.Instance)
 	}
 }

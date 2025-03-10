@@ -1,10 +1,13 @@
 package com.xdfun.autocropharvester
 
-import com.xdfun.autocropharvester.callbacks.AutoPlanter
+import com.xdfun.autocropharvester.planter.HarvesterAutoPlanter
 import com.xdfun.autocropharvester.commands.AutoCropHarvesterCommands
-import com.xdfun.autocropharvester.configuration.ConfigurationChangedCallback
-import com.xdfun.autocropharvester.configuration.ConfigurationManager
-import com.xdfun.autocropharvester.configuration.JsonFileConfiguration
+import com.xdfun.autocropharvester.configuration.events.HarvesterConfigurationChangedCallback
+import com.xdfun.autocropharvester.configuration.events.PlayerConfigurationChangedCallback
+import com.xdfun.autocropharvester.configuration.manager.ConfigurationManager
+import com.xdfun.autocropharvester.configuration.json.JsonFileConfiguration
+import com.xdfun.autocropharvester.events.BlockUpdateCallback
+import com.xdfun.autocropharvester.planter.PlayerAutoPlanter
 import com.xdfun.autocropharvester.ticks.AutoHarvestTicker
 import com.xdfun.autocropharvester.utils.ModIdUtils
 import net.fabricmc.api.ClientModInitializer
@@ -17,13 +20,18 @@ object AutoCropHarvesterClient : ClientModInitializer {
     override fun onInitializeClient() {
         _logger.info("Initializing Auto Crop Harvester")
 
-        val configuration = JsonFileConfiguration.INSTANCE.load()
+        val configuration = JsonFileConfiguration.Instance.load()
 
-        val harvestTicker = AutoHarvestTicker(configuration, _logger)
-        val autoPlanter = AutoPlanter(configuration, _logger)
+        val harvestTicker = AutoHarvestTicker(configuration.harvesterConfiguration, _logger)
+        val harvesterAutoPlanter = HarvesterAutoPlanter(configuration.harvesterConfiguration, _logger)
+        val playerAutoPlanter = PlayerAutoPlanter(configuration.playerConfiguration, _logger)
 
-        ConfigurationChangedCallback.EVENT.register(harvestTicker)
-        ConfigurationChangedCallback.EVENT.register(autoPlanter)
+        HarvesterConfigurationChangedCallback.Event.register(harvestTicker)
+        HarvesterConfigurationChangedCallback.Event.register(harvesterAutoPlanter)
+        PlayerConfigurationChangedCallback.Event.register(playerAutoPlanter)
+
+        BlockUpdateCallback.Event.register(harvesterAutoPlanter)
+        BlockUpdateCallback.Event.register(playerAutoPlanter)
 
         ConfigurationManager.Instance.initialize(configuration)
 

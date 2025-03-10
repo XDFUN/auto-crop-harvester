@@ -1,6 +1,6 @@
 package com.xdfun.autocropharvester.mixin.client;
 
-import com.xdfun.autocropharvester.callbacks.AutoPlanter;
+import com.xdfun.autocropharvester.events.BlockUpdateCallback;
 import com.xdfun.autocropharvester.utils.ModIdUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
@@ -21,15 +21,8 @@ public class ClientWorldMixin {
 
     @Inject(at = @At("HEAD"), method="processPendingUpdate")
     private void processPendingUpdate(BlockPos pos, BlockState state, Vec3d playerPos, CallbackInfo ci){
-        var instance = AutoPlanter.Companion.getInstance();
-
-        if(instance == null) {
-            _logger.warn("AutoPlanter instance is null!");
-            return;
-        }
-
         _logger.trace("processPendingUpdate [Pos: {}, State: {}]", pos, state);
 
-        instance.onBlockUpdate(pos, state);
+        BlockUpdateCallback.Companion.getEvent().invoker().onBlockUpdate(pos, state);
     }
 }

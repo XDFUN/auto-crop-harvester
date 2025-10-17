@@ -1,0 +1,21 @@
+{
+  "auto_crop_harvester.screens.configuration": "Configuration",
+  "auto_crop_harvester.screens.player_configuration": "Player Configuration",
+  "auto_crop_harvester.screens.harvester_configuration": "Harvester Configuration",
+  "auto_crop_harvester.keybindings.category": "Auto Crop Harvester",
+  "auto_crop_harvester.keybindings.open_config": "Open Configuration",
+  "auto_crop_harvester.options.scopes.state": "State",
+  "auto_crop_harvester.options.reset": "Reset",
+  "auto_crop_harvester.enable_disable_status.enable": "Enabled",
+  "auto_crop_harvester.enable_disable_status.disable": "Disabled",
+  "auto_crop_harvester.enable_disable_status.default": "-",
+  "auto_crop_harvester.options.player_configuration.enable_auto_plant": "Replant",
+  "auto_crop_harvester.options.player_configuration.enable_premature_auto_plant": "Replant Unripe",
+  "auto_crop_harvester.options.player_configuration.enable_premature_auto_plant.tooltip": "Allows crops to be replanted even if they are not fully grown. Requires Auto Plant to be enabled.",
+  "auto_crop_harvester.options.harvester_configuration.enable_auto_harvest": "Harvester",
+  "auto_crop_harvester.options.harvester_configuration.enable_auto_plant": "Replant",
+  "auto_crop_harvester.options.harvester_configuration.enable_premature_auto_plant": "Replant Unripe",
+  "auto_crop_harvester.options.harvester_configuration.enable_premature_auto_plant.tooltip": "Allows crops to be replanted even if they are not fully grown. Requires 'Replant' to be enabled.",
+  "auto_crop_harvester.options.harvester_configuration.enable_sneak_auto_plant": "Sneak Replant",
+  "auto_crop_harvester.options.harvester_configuration.auto_harvest_radius": "Harvest Radius: %1$s"
+}

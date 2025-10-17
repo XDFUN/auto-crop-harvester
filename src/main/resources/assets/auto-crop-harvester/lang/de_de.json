@@ -1,0 +1,21 @@
+{
+  "auto_crop_harvester.screens.configuration": "Konfiguration",
+  "auto_crop_harvester.screens.player_configuration": "Spieler Konfiguration",
+  "auto_crop_harvester.screens.harvester_configuration": "Erntehelfer Configuration",
+  "auto_crop_harvester.keybindings.category": "Auto Crop Harvester",
+  "auto_crop_harvester.keybindings.open_config": "Konfiguration öffnen",
+  "auto_crop_harvester.options.scopes.state": "Status",
+  "auto_crop_harvester.options.reset": "Zurücksetzen",
+  "auto_crop_harvester.enable_disable_status.enable": "Aktiviert",
+  "auto_crop_harvester.enable_disable_status.disable": "Deaktiviert",
+  "auto_crop_harvester.enable_disable_status.default": "-",
+  "auto_crop_harvester.options.player_configuration.enable_auto_plant": "Neu pflanzen",
+  "auto_crop_harvester.options.player_configuration.enable_premature_auto_plant": "Unreifes neu pflanzen",
+  "auto_crop_harvester.options.player_configuration.enable_premature_auto_plant.tooltip": "Ermöglicht das Neupflanzen von unreifen Pflanzen. 'Neu pflanze' muss hierfür aktiv sein.",
+  "auto_crop_harvester.options.harvester_configuration.enable_auto_harvest": "Erntehelfer",
+  "auto_crop_harvester.options.harvester_configuration.enable_auto_plant": "Neu pflanzen",
+  "auto_crop_harvester.options.harvester_configuration.enable_premature_auto_plant": "Unreifes neu pflanzen",
+  "auto_crop_harvester.options.harvester_configuration.enable_premature_auto_plant.tooltip": "Ermöglicht das Neupflanzen von unreifen Pflanzen. 'Neu pflanze' muss hierfür aktiv sein.",
+  "auto_crop_harvester.options.harvester_configuration.enable_sneak_auto_plant": "Schleichendes neu pflanzen",
+  "auto_crop_harvester.options.harvester_configuration.auto_harvest_radius": "Erntehelfer Radius: %1$s"
+}

@@ -35,23 +35,6 @@
       "environment": "client"
     }
   ],
-  "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2302": [
-        "com/xdfun/autocropharvester/blocks/MaturableBlock"
-      ],
-      "net/minecraft/class_2421": [
-        "com/xdfun/autocropharvester/blocks/MaturableBlock"
-      ],
-      "net/minecraft/class_2523": [
-        "com/xdfun/autocropharvester/blocks/MaturableBlock"
-      ],
-      "net/minecraft/class_2344": [
-        "com/xdfun/autocropharvester/blocks/MaturableBlock",
-        "com/xdfun/autocropharvester/blocks/OffsetBlock"
-      ]
-    }
-  },
   "depends": {
     "fabricloader": ">=0.16.10",
     "minecraft": "~1.21.4",

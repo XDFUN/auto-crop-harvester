@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.10"
     id("me.modmuss50.mod-publish-plugin") version "0.8.4"
+    id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
 var modVersion: String =
@@ -55,6 +56,11 @@ loom {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+
+    val koin = "io.insert-koin:koin-core:${project.properties["koin_version"]}"// IntelliJ got a problem when using the string directly
+    shadow(koin) // Normally "shadow" would remove the dependency from the compiled jar, but I reconfigured it to only compile "shadow" dependencies into the shadow jar.
+    implementation(koin) // For the local debug client, else can't bind the class file, but is not needed for the release
+
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${minecraftVersion}")
     mappings("net.fabricmc:yarn:${project.properties["yarn_mappings"]}:v2")
@@ -99,6 +105,24 @@ tasks.jar {
     }
 }
 
+tasks.shadowJar {
+    dependencies {
+        exclude(dependency(":kotlin-stdlib:"))
+    }
+
+    from(sourceSets.main.get().output)
+    from(sourceSets["client"].output)
+    configurations = listOf(project.configurations.shadow.get()) // Defining that only shadow deps are compiled into the jar
+    archiveClassifier = ""
+    minimize()
+}
+
+tasks.remapJar {
+    dependsOn(tasks.shadowJar)
+    mustRunAfter(tasks.shadowJar)
+    inputFile = file(tasks.shadowJar.get().archiveFile.get())
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -135,8 +159,10 @@ publishMods {
     file = modFile
     changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
 
-    if (modVersionType != null) {
+    if(modVersionType.isNullOrEmpty()){
         type.set(STABLE)
+    }
+    else {
         if (modVersionType.equals("alpha", true)) {
             type.set(ALPHA)
         }

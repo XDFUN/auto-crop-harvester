@@ -64,15 +64,26 @@ class AutoHarvestTicker(configuration: HarvesterConfiguration, logger: Logger) :
             absAutoHarvestRadius = player.blockInteractionRange
         }
 
-        val topLeftX = (player.x - absAutoHarvestRadius).toInt()
-        val bottomRightX = (player.x + absAutoHarvestRadius).toInt()
-        val topLeftZ = (player.z - absAutoHarvestRadius).toInt()
-        val bottomRightZ = (player.z + absAutoHarvestRadius).toInt()
+        val centerX = player.blockPos.x
+        val centerZ = player.blockPos.z
+        val centerY = player.blockPos.y
 
-        for (x in topLeftX..bottomRightX) {
-            for (z in topLeftZ..bottomRightZ) {
-                val blockPos = BlockPos(x, player.blockPos.y, z)
-                harvestBlockPos(blockPos, client, player, world, configuration)
+        val radius = absAutoHarvestRadius.toInt()
+        val diameter = absAutoHarvestRadius * absAutoHarvestRadius
+
+        val minX = centerX - radius
+        val maxX = centerX + radius
+        val minZ = centerZ - radius
+        val maxZ = centerZ + radius
+
+        for (x in minX..maxX) {
+            for (z in minZ..maxZ) {
+                val dx = (x + 0.5) - player.x
+                val dz = (z + 0.5) - player.z
+                if (dx * dx + dz * dz <= diameter) {
+                    val blockPos = BlockPos(x, centerY, z)
+                    harvestBlockPos(blockPos, client, player, world, configuration)
+                }
             }
         }
     }

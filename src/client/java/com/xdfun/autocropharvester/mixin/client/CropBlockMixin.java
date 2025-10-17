@@ -13,6 +13,11 @@ public abstract class CropBlockMixin implements MaturableBlock {
     @Shadow public abstract boolean isMature(BlockState state);
 
     @Override
+    public boolean hasCrop(@NotNull BlockState state, @NotNull BlockPos pos) {
+        return true;
+    }
+
+    @Override
     public boolean isMature(@NotNull BlockState blockState, @NotNull BlockPos blockPos){
         return isMature(blockState);
     }

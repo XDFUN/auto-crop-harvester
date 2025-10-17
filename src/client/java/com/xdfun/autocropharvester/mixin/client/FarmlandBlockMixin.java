@@ -17,7 +17,7 @@ public abstract class FarmlandBlockMixin implements MaturableBlock, OffsetBlock 
     private static ClientWorld getWorld() {
         var instance = MinecraftClient.getInstance();
 
-        if(instance != null) {
+        if (instance != null) {
             return instance.world;
         }
 
@@ -25,18 +25,32 @@ public abstract class FarmlandBlockMixin implements MaturableBlock, OffsetBlock 
     }
 
     @Override
-    public boolean isMature(@NotNull BlockState state, @NotNull BlockPos pos){
+    public boolean hasCrop(@NotNull BlockState state, @NotNull BlockPos pos) {
         var world = getWorld();
 
-        if(world == null) {
+        if (world == null) {
             return false;
         }
 
         var cropPos = pos.up();
         var cropState = world.getBlockState(cropPos);
 
-        if(cropState.getBlock() instanceof MaturableBlock) {
-            return ((MaturableBlock)cropState.getBlock()).isMature(cropState, cropPos);
+        return cropState.getBlock() instanceof MaturableBlock;
+    }
+
+    @Override
+    public boolean isMature(@NotNull BlockState state, @NotNull BlockPos pos) {
+        var world = getWorld();
+
+        if (world == null) {
+            return false;
+        }
+
+        var cropPos = pos.up();
+        var cropState = world.getBlockState(cropPos);
+
+        if (cropState.getBlock() instanceof MaturableBlock) {
+            return ((MaturableBlock) cropState.getBlock()).isMature(cropState, cropPos);
         }
 
         return false;

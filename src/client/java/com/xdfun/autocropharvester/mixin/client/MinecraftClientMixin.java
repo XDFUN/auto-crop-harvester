@@ -1,6 +1,7 @@
 package com.xdfun.autocropharvester.mixin.client;
 
 import com.xdfun.autocropharvester.blocks.MaturableBlock;
+import com.xdfun.autocropharvester.blocks.OffsetBlock;
 import com.xdfun.autocropharvester.configuration.manager.ConfigurationManager;
 import com.xdfun.autocropharvester.planter.PlayerAutoPlanter;
 import net.minecraft.block.Block;
@@ -31,7 +32,7 @@ public abstract class MinecraftClientMixin {
     private void onPlayerAttackBlock(CallbackInfoReturnable<Boolean> cir) {
         var configuration = ConfigurationManager.Companion.getInstance().getPlayerConfiguration();
 
-        if(!configuration.getEnableAutoPlant()){
+        if (!configuration.getEnableAutoPlant()) {
             return;
         }
 
@@ -48,20 +49,32 @@ public abstract class MinecraftClientMixin {
             BlockState state = checkedWorld.getBlockState(blockPos);
             Block block = state.getBlock();
 
-            if (block instanceof MaturableBlock) {
+            if (block instanceof MaturableBlock maturableBlock) {
+                if (!maturableBlock.hasCrop(state, blockPos)) {
+                    return;
+                }
+
+                if(block instanceof OffsetBlock offsetBlock){
+                    var offsetPos = offsetBlock.offsetAttack(state, blockPos);
+
+                    if(offsetPos != blockPos) {
+                        return;
+                    }
+                }
+
                 var planter = PlayerAutoPlanter.Companion.getInstance();
 
-                if(planter == null) {
+                if (planter == null) {
                     return;
                 }
 
                 var blockItem = block.asItem();
 
-                if(configuration.getEnablePrematureAutoPlant()) {
+                if (configuration.getEnablePrematureAutoPlant()) {
                     planter.notifyBlockBreakRequest(blockItem, blockPos);
                 }
 
-                if(((MaturableBlock) block).isMature(state, blockPos)) {
+                if (maturableBlock.isMature(state, blockPos)) {
                     planter.notifyBlockBreakRequest(blockItem, blockPos);
                 }
             }

@@ -13,11 +13,16 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class SugarCaneBlockMixin implements MaturableBlock {
 
     @Override
+    public boolean hasCrop(@NotNull BlockState state, @NotNull BlockPos pos) {
+        return true;
+    }
+
+    @Override
     public boolean isMature(@NotNull BlockState state, @NotNull BlockPos pos) {
         MinecraftClient client = MinecraftClient.getInstance();
         ClientWorld world = client.world;
 
-        if(world == null) {
+        if (world == null) {
             return false;
         }
 

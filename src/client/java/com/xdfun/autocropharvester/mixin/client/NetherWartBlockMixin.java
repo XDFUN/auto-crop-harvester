@@ -12,13 +12,18 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(NetherWartBlock.class)
 public abstract class NetherWartBlockMixin implements MaturableBlock {
     @Accessor("MAX_AGE")
-    private static int accessMaxAge(){
+    private static int accessMaxAge() {
         throw new AssertionError();
     }
 
     @Accessor("AGE")
-    private static IntProperty getAgeProperty(){
+    private static IntProperty getAgeProperty() {
         throw new AssertionError();
+    }
+
+    @Override
+    public boolean hasCrop(@NotNull BlockState state, @NotNull BlockPos pos) {
+        return true;
     }
 
     @Override

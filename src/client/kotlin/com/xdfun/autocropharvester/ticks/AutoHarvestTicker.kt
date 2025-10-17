@@ -120,7 +120,9 @@ class AutoHarvestTicker(configuration: HarvesterConfiguration, logger: Logger) :
         cropBlockState: BlockState,
         blockPos: BlockPos
     ): Boolean {
-        return configuration.enablePrematureAutoHarvest || cropBlock.isMature(cropBlockState, blockPos)
+        return cropBlock.hasCrop(cropBlockState, blockPos)
+                && (configuration.enablePrematureAutoHarvest
+                || cropBlock.isMature(cropBlockState, blockPos))
     }
 
     private fun harvestMaturableBlock(
@@ -152,7 +154,7 @@ class AutoHarvestTicker(configuration: HarvesterConfiguration, logger: Logger) :
             val direction = getDirectionFromHit(player.eyePos, attackBlockPos)
             _logger.trace("Direction: {}", direction)
 
-            if(client.interactionManager?.attackBlock(attackBlockPos, direction) == true){
+            if (client.interactionManager?.attackBlock(attackBlockPos, direction) == true) {
                 _logger.trace("Could attack block")
             }
         }
@@ -171,9 +173,11 @@ class AutoHarvestTicker(configuration: HarvesterConfiguration, logger: Logger) :
             absX >= absY && absX >= absZ -> {
                 if (direction.x > 0) Direction.EAST else Direction.WEST
             }
+
             absY >= absX && absY >= absZ -> {
                 if (direction.y > 0) Direction.UP else Direction.DOWN
             }
+
             else -> {
                 if (direction.z > 0) Direction.SOUTH else Direction.NORTH
             }

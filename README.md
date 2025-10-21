@@ -28,13 +28,13 @@ URL: https://www.curseforge.com/minecraft/mc-mods/auto-crop-harvester
 3. Check that the mods `Fabric Api` and `Fabric Language Kotlin` are installed.
 4. Done
 
-For more information on how to install fabric see: https://wiki.fabricmc.net/install
+For more information on how to install fabric, see: https://wiki.fabricmc.net/install
 
 ## How to use
 
-To auto harvest just walk over the crop.
+To auto harvest walk over the crops.
 
-To auto plant either break the crop with the harvester or manually while the `auto_plant` option for either is enabled.\
+To auto plant either break the crop with the harvester or manually, while the `auto_plant` option for either is enabled.\
 The seed of the harvested crop must be somewhere in the inventory for it to work.\
 The seeds are searched in the following order: Main Hand -> OffHand -> Hotbar -> Inventory
 
@@ -47,33 +47,50 @@ The seeds are searched in the following order: Main Hand -> OffHand -> Hotbar ->
 - Sugarcane
 - Netherwart
 
-## Commands
+## Keybinds
+
+- Open Configuration: Unbound
+  : Opens the configuration screen
+
+## Screens
 
 ### Configuration
 
-Commands to configure the mod always follow this structure `/auto-crop-harvester config <section> <option> <get | set | reset> <set:value>`.
+![Configuration Screen](./resources/configuration-screen.png)
 
-#### Methods
+### Harvester
 
-- `get`: Returns the current configured value
-- `set`: Sets the value
-- `reset`: Resets the value to it's default
+![Harvester Configuration Screen](./resources/harvester-configuration-screen.png)
 
-#### Sections
+- Harvester
+  : Enables or disables the harvester\
+    Default: `Enabled` 
 
-##### Harvester
+- Replant
+  : Enables or disables the replanting of harvested crops\
+    Default: `Enabled`
 
-| Name                   | Description                                            | Default Value | Allowed Values     |
-|------------------------|--------------------------------------------------------|---------------|--------------------|
-| auto_harvest           | Enables the auto harvester                             | `true`        | `true` and `false` |
-| sneak_auto_harvest     | Enables the auto harvester while sneaking              | `false`       | `true` and `false` |
-| premature_auto_harvest | Enables the auto harvester for premature crops         | `false`       | `true` and `false` |
-| auto_plant             | Configures if auto harvested crops should be replanted | `true`        | `true` and `false` |
-| auto_harvest_radius    | The radius around the player which gets harvested      | `1`           | `0` up to `4.5`    |
+- Harvest Unripe
+  : Enables or disables the harvesting of unripe crops\
+    Default: `Disabled`
 
-##### Player
+-  Sneak Harvest
+  : Enables or disables the harvesting while sneaking\
+    Default: `Disabled`
 
-| Name                 | Description                                                  | Default Value | Allowed Values     |
-|----------------------|--------------------------------------------------------------|---------------|--------------------|
-| auto_plant           | Enables if player broken crops should be replanted           | `true`        | `true` and `false` |
-| premature_auto_plant | Enables if player broken premature crops should be replanted | `false`       | `true` and `false` |
+-  Harvest Radius
+  : The radius around the player which gets harvested
+    Default: `1`
+
+### Player
+
+![Player Configuration Screen](./resources/player-configuration-screen.png)
+
+- Replant
+  : Enables or disables the replanting of broken crops\
+    Default: `Enabled`
+
+- Replant Unripe
+  : Enables or disables the replanting of unripe crops\
+    Default: `Enabled`
+  
